@@ -157,7 +157,8 @@ setMethod("interestMeasure",  signature(x = "rules"),
       "yuleY",
       "lerman",
       "implicationIndex",
-      "KemOpp", "KemOpp_phi"
+      "KemOpp", "KemOpp_phi",
+      "generalMean"
     )
     
     if(missing(measure)) measure <- builtin_measures
@@ -198,7 +199,7 @@ setMethod("interestMeasure",  signature(x = "rules"),
     if(measure == "RLD") return(.RLD(x, transactions, reuse))
     if(measure == "imbalance") return(.imbalance(x, transactions, reuse))
     if(measure == "kulczynski") return(.kulc(x, transactions, reuse))
-    
+    if(measure == "generalMean") return(.generalizedMean(x, transactions, reuse, ...))    
     
     ## all other measures are implemented here (counts is in ...)
     ret <- .basicRuleMeasure(x, measure, 
@@ -525,4 +526,18 @@ setMethod("interestMeasure",  signature(x = "rules"),
   
   kulc <- XY/2 * (1/X + 1/Y)
   kulc
+}
+
+## Generalized mean following Wu/Chen/Han (2009), "Re-examination 
+## of interestingness measures"
+
+.generalizedMean <- function(x, transactions = NULL, reuse = TRUE, k=1) {
+  if(k==0) {
+    k <- 10^-5
+    warning(sprintf("k-exponent for generalized is zero, replaced with 10^-5"))}
+  counts <- .getCounts(x, transactions, reuse)
+  Pab <- counts$f11/counts$fx1
+  Pba <- counts$f11/counts$f1x
+  gm <- ((Pab^k + Pba^k)/2)^(1/k) 
+  return(gm)
 }
