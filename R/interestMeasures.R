@@ -158,7 +158,9 @@ setMethod("interestMeasure",  signature(x = "rules"),
       "lerman",
       "implicationIndex",
       "KemOpp", "KemOpp_phi",
-      "generalMean"
+      "generalMean",
+      "logRatio", "twowaysupport",
+      "normdifference", "relativerisk"
     )
     
     if(missing(measure)) measure <- builtin_measures
@@ -458,6 +460,11 @@ setMethod("interestMeasure",  signature(x = "rules"),
   ## Kemeny-Oppenheim's k and kphi, the arithmetic mean of k and phi (see Glass 2013)
   if(measure == "KemOpp") return((f11*f00-f01*f10) / (f11*f00+f01*f10+2*f11*f10))
   if(measure == "KemOpp_phi") return( 0.5*((f11*f00-f01*f10) / (f11*f00+f01*f10+2*f11*f10) + (N*f11-f1x*fx1) / sqrt(f1x*fx1*f0x*fx0)) )
+  if(measure == "logRatio") return(f11 / (f1x*fx1))
+  if(measure == "twowaysupport") return(f11 * log(f11 / f1x*fx1))
+  if(measure == "normdifference") return((f11*f00-f01*f10)/((f11+f10)*(f01+f00)))    # Glass (2013)
+  if(measure == "relativerisk") return(log((f11*(f01+f00))/(f01*(f11+f10))))         # Glass (2013)
+     
 
   stop("Specified measure not implemented.")
 }
