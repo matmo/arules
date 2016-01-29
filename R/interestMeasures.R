@@ -318,9 +318,9 @@ setMethod("interestMeasure",  signature(x = "rules"),
 ## count helpers
 .getCounts <- function(x, transactions, reuse = TRUE){
   N <- length(transactions)
-  f11 <- interestMeasure(x, "support", transactions, reuse) * N
-  f1x <- interestMeasure(x, "coverage", transactions, reuse) * N
-  fx1 <- .rhsSupport(x, transactions, reuse) * N
+  f11 <- round(interestMeasure(x, "support", transactions, reuse) * N, 0)
+  f1x <- round(interestMeasure(x, "coverage", transactions, reuse) * N, 0)
+  fx1 <- round(.rhsSupport(x, transactions, reuse) * N, 0)
   f0x <- N - f1x
   fx0 <- N - fx1
   f10 <- f1x - f11
