@@ -161,7 +161,8 @@ setMethod("interestMeasure",  signature(x = "rules"),
       "generalMean",
       "logRatio", "twowaysupport",
       "normdifference", "relativerisk",
-      "maxconf", "allconf", "coherence", "kulc"
+      "maxconf", "allconf", "coherence", "kulc",
+      "mod_yules"
     )
     
     if(missing(measure)) measure <- builtin_measures
@@ -468,7 +469,8 @@ setMethod("interestMeasure",  signature(x = "rules"),
   if(measure == "coherence") return( ( (f11/fx1)^-1 + (f11/f1x)^-1 -1 )^-1 )
   if(measure == "kulc") return( ((f11/fx1) + (f11/f1x))/2 )
   if(measure == "maxconf") return( pmax((f11/fx1), (f11/f1x)) )
-  if(measure == "allconf") return( pmin((f11/fx1), (f11/f1x)) )     
+  if(measure == "allconf") return( pmin((f11/fx1), (f11/f1x)) )
+  if(measure == "mod_yules") return(.mod_yules(a=f11,b=f10, c=f01, d=f00))
 
   stop("Specified measure not implemented.")
 }
@@ -551,4 +553,16 @@ setMethod("interestMeasure",  signature(x = "rules"),
   Pba <- counts$f11/counts$f1x
   gm <- ((Pab^k + Pba^k)/2)^(1/k) 
   return(gm)
+}
+
+.mod_yules <- function(a=100,b=100,c=100,d=100, kor=0.5, nodummy=FALSE, N.kor=FALSE){
+   # kor <- 0.5
+    ind <- 0
+    if(any(c(a,b,c,d)==0)){ind <- 1}
+    if(nodummy==TRUE){ind <- 1}
+                                        #kor <- 0.5
+    if(N.kor==TRUE){
+        kor <- 1/(a+b+c+d)
+    }
+    return(((a+ind*kor)*(d+ind*kor)-(b+ind*kor)*(c+ind*kor))/((a+ind*kor)*(d+ind*kor)+(b+ind*kor)*(c+ind*kor)-2*(ind*kor^2)))
 }
