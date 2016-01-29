@@ -156,7 +156,8 @@ setMethod("interestMeasure",  signature(x = "rules"),
       "yuleQ",
       "yuleY",
       "lerman",
-      "implicationIndex"
+      "implicationIndex",
+      "KemOpp", "KemOpp_phi"
     )
     
     if(missing(measure)) measure <- builtin_measures
@@ -453,6 +454,10 @@ setMethod("interestMeasure",  signature(x = "rules"),
     else return(stats::pchisq(q=chi2, df=1, lower.tail=FALSE))
   }
   
+  ## Kemeny-Oppenheim's k and kphi, the arithmetic mean of k and phi (see Glass 2013)
+  if(measure == "KemOpp") return((f11*f00-f01*f10) / (f11*f00+f01*f10+2*f11*f10))
+  if(measure == "KemOpp_phi") return( 0.5*((f11*f00-f01*f10) / (f11*f00+f01*f10+2*f11*f10) + (N*f11-f1x*fx1) / sqrt(f1x*fx1*f0x*fx0)) )
+
   stop("Specified measure not implemented.")
 }
 
