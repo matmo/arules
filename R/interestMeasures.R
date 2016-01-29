@@ -160,7 +160,8 @@ setMethod("interestMeasure",  signature(x = "rules"),
       "KemOpp", "KemOpp_phi",
       "generalMean",
       "logRatio", "twowaysupport",
-      "normdifference", "relativerisk"
+      "normdifference", "relativerisk",
+      "maxconf", "allconf", "coherence", "kulc"
     )
     
     if(missing(measure)) measure <- builtin_measures
@@ -464,7 +465,10 @@ setMethod("interestMeasure",  signature(x = "rules"),
   if(measure == "twowaysupport") return(f11 * log(f11 / f1x*fx1))
   if(measure == "normdifference") return((f11*f00-f01*f10)/((f11+f10)*(f01+f00)))    # Glass (2013)
   if(measure == "relativerisk") return(log((f11*(f01+f00))/(f01*(f11+f10))))         # Glass (2013)
-     
+  if(measure == "coherence") return( ( (f11/fx1)^-1 + (f11/f1x)^-1 -1 )^-1 )
+  if(measure == "kulc") return( ((f11/fx1) + (f11/f1x))/2 )
+  if(measure == "maxconf") return( pmax((f11/fx1), (f11/f1x)) )
+  if(measure == "allconf") return( pmin((f11/fx1), (f11/f1x)) )     
 
   stop("Specified measure not implemented.")
 }
