@@ -18,11 +18,17 @@ is.redundant(x, ...)
   \item{...}{ additional arguments. }
 }
 \details{
-A rule is redundant if it does not improve confidence over a more specific 
-rule (a rule with items added to the lhs). That is, a more specific rule is redundant if it is less 
-predictive than a more general rule. This is equivalent to a 
-negative \emph{improvement} as defined by Bayardo et al. (2000).
+A rule is redundant if a more general rules with a higher confidence exists.
+That is, a more specific rule is redundant if it is less 
+predictive than a more general rule. A rule is more general if it has 
+the same RHS but one or more items removed from the LHS. Formally,
+a rule is redundent if there
 
+\eqn{\exists X' \subset X \quad conf(X' \Rightarrow Y) > conf(X \Rightarrow Y).}{
+exists X' subset X  conf(X' -> Y) > conf(X -> Y).}
+
+This is equivalent to a 
+negative \emph{improvement} as defined by Bayardo et al. (2000).
 In this implementation other measures than confidence, e.g. 
 improvement of lift, can be used as well. 
 }
@@ -49,5 +55,5 @@ inspect(rules[is.redundant(rules)])
 ## non-redundant rules
 inspect(rules[!is.redundant(rules)])
 }
-\author{Michael Hahsler}
+\author{Michael Hahsler and Christian Buchta}
 \keyword{manip}

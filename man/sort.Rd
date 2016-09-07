@@ -5,6 +5,8 @@
 \alias{sort,associations-method}
 \alias{head}
 \alias{head,associations-method}
+\alias{tail}
+\alias{tail,associations-method}
 \title{Sorting Associations}
 \description{
   Provides the method \code{sort} to sort elements
@@ -17,6 +19,7 @@
     by = "support", order = FALSE, ...)
 
 \S4method{head}{associations}(x, n = 6L, by = NULL, decreasing = TRUE, ...)
+\S4method{tail}{associations}(x, n = 6L, by = NULL, decreasing = TRUE, ...)
 }
 \arguments{
   \item{x}{ an object to be sorted.}
@@ -35,13 +38,15 @@
 }
 \details{
 \code{sort} is relatively slow for large sets of associations since it 
-has copy and rearrange a large data structure. 
+has to copy and rearrange a large data structure. 
+Note that sorting creates a second copy of the set of associations which can
+be slow and memory consuming for large sets.
 With \code{order = TRUE} a integer vector with the order is returned instead
 of the reordered associations.
 
-If only the top n associations
-are needed then \code{head} using \code{by} performs this faster 
-(without copying and rearranging all the data). 
+If only the top \code{n} associations are needed then \code{head} using \code{by} performs this faster than calling \code{sort} and then \code{head} since 
+it does it without copying and rearranging all the data. 
+\code{tail} works in the same way.
 }
 \value{
   An object of the same class as \code{x}.
@@ -62,11 +67,9 @@ rules_by_lift <- sort(rules, by = "lift")
 inspect(head(rules))
 inspect(head(rules_by_lift))
 
-## Fast way to get the top 3 rules according to confidence
-inspect(head(rules, n = 3, by = "confidence"))
-
-## Order of rules by decreasing support
-sort(rules, by = "confidence", order = TRUE)
+## A faster/less memory consuming way to get the top 5 rules according to lift 
+## (see Details section)
+inspect(head(rules, n = 5, by = "lift"))
 }
 \keyword{manip}
 \keyword{arith}

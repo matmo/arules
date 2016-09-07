@@ -152,8 +152,10 @@ setAs("list", "itemMatrix",
     ## some checks
     if (!all(sapply(from, is.atomic)))
       stop("can coerce list with atomic components only")
-    if (any(unlist(lapply(from, duplicated))))
-      stop("can not coerce list with transactions with duplicated items")
+    if (any(dup <- sapply(from, anyDuplicated))) {
+      warning("removing duplicated items in transactions")
+      for(i in which(dup>0)) from[[i]] <- unique(from[[i]])
+    }
     
     ## fix for Matrix (ceeboo 2009)
     from <- lapply(from, sort)
@@ -215,6 +217,10 @@ setMethod("%in%", signature(x = "itemMatrix", table = "character"),
   }
 )
 
+setMethod("%in%", signature(x = "itemMatrix", table = "itemMatrix"),
+  function(x, table) x %in% itemLabels(table)
+)
+
 ## all items have to be in
 setMethod("%ain%", signature(x = "itemMatrix", table = "character"),
   function(x, table) {
@@ -271,7 +277,8 @@ setMethod("[", signature(x = "itemMatrix", i = "ANY", j = "ANY", drop = "ANY"),
       x@data <- .Call("R_colSubset_ngCMatrix", x@data, i, 
         PACKAGE="arules")
       
-      x@itemsetInfo <- x@itemsetInfo[i,, drop = FALSE]
+      ### only subset if we have rows
+      if(nrow(x@itemsetInfo)) x@itemsetInfo <- x@itemsetInfo[i,, drop = FALSE]
     }
     
     if (!missing(j)) {
